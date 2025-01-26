@@ -6,9 +6,7 @@
   "name": "Automatic Elytra",
   "description": "Automatic Elytra is a client side mod that will swap the players elytra and chestplate for them!",
   "authors": [
-    "AreUThreateningMe"
-  ],
-  "contributors": [
+    "AreUThreateningMe",
     "RazrCraft"
   ],
   "contact": {
@@ -30,9 +28,9 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.21",
-    "fabric-api": ">=0.86.1+1.20.1",
-    "minecraft": "~1.20.1",
-    "java": ">=17"
+    "fabricloader": ">=0.16.10",
+    "fabric-api": ">=0.115.0+1.21.4",
+    "minecraft": "~1.21.4",
+    "java": ">=21"
     }
 }
