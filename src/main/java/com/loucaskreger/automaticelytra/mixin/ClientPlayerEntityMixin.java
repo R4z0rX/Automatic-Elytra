@@ -32,9 +32,10 @@ public class ClientPlayerEntityMixin {
         ClientPlayerInteractionManager interactionManager = MinecraftClient.getInstance().interactionManager;
         // Injects when the elytra should be deployed
         if (!player.isOnGround() &&
-            !player.isGliding() &&
-            !player.hasStatusEffect(StatusEffects.LEVITATION)) { //&&
-            // [Future] Replace with an event that fires before elytra take off.
+                !player.isGliding() &&
+                !player.hasStatusEffect(StatusEffects.LEVITATION) &&
+                !player.isTouchingWater()) { //&&
+                // [Future] Replace with an event that fires before elytra take off.
             this.equipElytra(player, interactionManager);
         }
     }
@@ -72,11 +73,11 @@ public class ClientPlayerEntityMixin {
     @Unique
     private int getElytraIndex(ClientPlayerEntity player) {
         DefaultedList<ItemStack> inv = player.getInventory().main;
-        for (int i = 0; i < inv.size(); i++) {
-            ItemStack stack = inv.get(i);
+        for (int slot : slotArray()) {
+            ItemStack stack = inv.get(slot);
             // Avoid broken Elytras
             if (stack.isOf(Items.ELYTRA) && (stack.getDamage() < stack.getMaxDamage() - 1)) {
-                return i;
+                return DataSlotToNetworkSlot(slot);
             }
         }
         return -1;
@@ -87,5 +88,32 @@ public class ClientPlayerEntityMixin {
         interactionManager.clickSlot(0, slot, 0, SlotActionType.PICKUP, player);
         interactionManager.clickSlot(0, CHESTPLATE_INDEX, 0, SlotActionType.PICKUP, player);
         interactionManager.clickSlot(0, slot, 0, SlotActionType.PICKUP, player);
+    }
+
+    @Unique
+    private static int DataSlotToNetworkSlot(int index) {
+        if(index == 100)
+            index = 8;
+        else if(index == 101)
+            index = 7;
+        else if(index == 102)
+            index = 6;
+        else if(index == 103)
+            index = 5;
+        else if(index == -106 || index == 40)
+            index = 45;
+        else if(index <= 8)
+            index += 36;
+        else if(index >= 80 && index <= 83)
+            index -= 79;
+        return index;
+    }
+    @Unique
+    private static int[] slotArray() {
+        int[] range = new int[37];
+        for (int i = 0; i < 9; i++) range[i] = 8 - i;
+        for (int i = 9; i < 36; i++) range[i] = 35 - (i - 9);
+        range[36] = 40;
+        return range;
     }
 }
